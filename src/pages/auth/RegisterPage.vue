@@ -35,33 +35,43 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div>
-    <h2>Formulaire d'inscription</h2>
-    <form @submit.prevent="handleSubmit">
-      <div>
-        <label for="username">Username:</label>
-        <input
-          type="text"
-          id="username"
-          v-model.trim="newUser.username"
-          required
-        />
-      </div>
-      <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" v-model.trim="newUser.email" required />
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          v-model.trim="newUser.password"
-          required
-        />
-      </div>
-      <button type="submit">Envoyer</button>
-    </form>
+  <div class="d-flex justify-content-center align-items-center h-75">
+    <div>
+      <h2>Formulaire d'inscription</h2>
+      <form @submit.prevent="handleSubmit">
+        <div>
+          <label for="username" class="form-label">Username:</label>
+          <input
+            type="text"
+            id="username"
+            v-model.trim="newUser.username"
+            class="form-control"
+            required
+          />
+        </div>
+        <div>
+          <label for="email" class="form-label">Email:</label>
+          <input
+            type="email"
+            id="email"
+            v-model.trim="newUser.email"
+            required
+            class="form-control"
+          />
+        </div>
+        <div>
+          <label for="password" class="form-label">Password:</label>
+          <input
+            type="password"
+            id="password"
+            v-model.trim="newUser.password"
+            required
+            class="form-control"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+      </form>
+    </div>
   </div>
 </template>
 

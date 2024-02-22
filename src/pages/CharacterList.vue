@@ -11,16 +11,6 @@ onBeforeMount(async () => {
   await character.getCharacterList();
 });
 
-const onClickHandler = async (page) => {
-  await character.getCharacterList(page);
-};
-
-const currentPage = ref(1);
-
-const openFilter = ref(false);
-const handleFilter = () => {
-  openFilter.value = !openFilter.value;
-};
 const selectedFilter = ref({
   name: null,
   status: null,
@@ -28,47 +18,85 @@ const selectedFilter = ref({
   type: null,
   gender: null
 });
+const currentPage = ref(1);
+const onClickHandler = async (page) => {
+  await character.getCharacterList(
+    selectedFilter.value.name,
+    selectedFilter.value.status,
+    selectedFilter.value.species,
+    selectedFilter.value.type,
+    selectedFilter.value.gender,
+    page
+  );
+};
+
+const openFilter = ref(false);
+const handleFilter = () => {
+  openFilter.value = !openFilter.value;
+};
+
+watch(
+  selectedFilter,
+  async (newFilter) => {
+    await character.getCharacterList(
+      newFilter.name,
+      newFilter.status,
+      newFilter.species,
+      newFilter.type,
+      newFilter.gender
+    );
+  },
+  { deep: true }
+);
 </script>
 
 <template>
-  <LoadingState :is-loading="character.loading" />
-  <div v-if="!character.loading" class="d-flex flex-column align-items-center">
-    <div @click="handleFilter" style="cursor: pointer">
-      <i class="fa-solid fa-filter" />
-    </div>
+  <div class="d-flex justify-content-center">
+    <div class="w-25">
+      <div @click="handleFilter" style="cursor: pointer">
+        <i class="fa-solid fa-filter" />
+      </div>
 
-    <div v-if="openFilter">
-      <div class="container-filter">
-        <div class="searchBar">
-          <div class="form-outline" data-mdb-input-init>
-            <label for="search">Name</label>
-            <input
-              type="search"
-              id="search"
-              class="form-control"
-              v-model="selectedFilter.name"
-            />
+      <div v-if="openFilter">
+        <div class="container-filter">
+          <div class="searchBar">
+            <div class="form-outline" data-mdb-input-init>
+              <label for="search">Name</label>
+              <input
+                type="search"
+                id="search"
+                class="form-control"
+                v-model="selectedFilter.name"
+              />
+            </div>
           </div>
-        </div>
-        <div
-          v-for="filter in character.optionsFilter"
-          :key="filter.name"
-          class="d-flex flex-column m-1"
-          :class="filter.name"
-        >
-          <label :for="filter.name">{{ filter.name }}</label>
-          <select :name="filter.name" :id="filter.id" v-model="selectedFilter">
-            <option
-              :value="subFilter"
-              v-for="subFilter in filter.subFilters"
-              :key="subFilter"
+          <div
+            v-for="filter in character.optionsFilter"
+            :key="filter.name"
+            class="d-flex flex-column m-1"
+            :class="filter.name"
+          >
+            <label :for="filter.name">{{ filter.name }}</label>
+            <select
+              :name="filter.name"
+              :id="filter.id"
+              v-model="selectedFilter[filter.name]"
             >
-              {{ subFilter }}
-            </option>
-          </select>
+              <option
+                :value="subFilter"
+                v-for="subFilter in filter.subFilters"
+                :key="subFilter"
+              >
+                {{ subFilter }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+  <LoadingState :is-loading="character.loading" />
+  <div v-if="!character.loading" class="d-flex flex-column align-items-center">
     <div class="parent div1">
       <Card
         :src="c.image"
@@ -80,7 +108,7 @@ const selectedFilter = ref({
     <vue-awesome-paginate
       :total-items="character.filter.count"
       :items-per-page="20"
-      :max-pages-shown="5"
+      :max-pages-shown="3"
       v-model="currentPage"
       :on-click="onClickHandler"
     />
