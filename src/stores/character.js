@@ -1,25 +1,29 @@
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 import { getListOfCharacter } from '../services/RickAndMorty.js';
 
-export const useCharacter = defineStore('character', {
-  state: () => ({
-    filters: {
-      pageCount: 0,
-      itemsCount: 0,
-      currentPage: 1
-    },
-    data: []
-  }),
-  getters: {},
-  actions: {
-    async fetchCharacter() {
-      try {
-        this.data = await getListOfCharacter();
+export const useCharacter = defineStore('character', () => {
+  const filter = ref(null);
 
-        console.log(this.data);
-      } catch (e) {
-        return e;
-      }
+  const data = ref([]);
+
+  const loading = ref(false);
+
+  function getCharacterList(page = 1) {
+    try {
+      loading.value = true;
+      const request = [getListOfCharacter(page)];
+      return Promise.all(request).then((res) => {
+        const { results, info } = res[0].data;
+        filter.value = info;
+        data.value = results;
+        loading.value = false;
+      });
+    } catch (e) {
+      console.log(e);
+      loading.value = false;
     }
   }
+
+  return { filter, data, loading, getCharacterList };
 });

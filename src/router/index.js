@@ -3,6 +3,8 @@ import RegisterPage from '../pages/auth/RegisterPage.vue';
 import HomeView from '../pages/HomeView.vue';
 import LoginPage from '../pages/auth/LoginPage.vue';
 import { useAuthStore } from '../stores/auth.js';
+import CharacterList from '../pages/CharacterList.vue';
+import NotFoundView from '../pages/NotFoundView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +17,14 @@ const router = createRouter({
     {
       path: '/login',
       component: LoginPage
+    },
+    {
+      path: '/character',
+      component: CharacterList
+    },
+    {
+      path: '/404',
+      component: NotFoundView
     }
   ]
 });
