@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getListOfCharacter } from '../services/RickAndMorty.js';
+import { FILTER } from '../constants/optionsFilter.js';
 
 export const useCharacter = defineStore('character', () => {
   const filter = ref(null);
@@ -9,10 +10,21 @@ export const useCharacter = defineStore('character', () => {
 
   const loading = ref(false);
 
-  function getCharacterList(page = 1) {
+  const optionsFilter = ref(FILTER);
+
+  function getCharacterList(
+    name = null,
+    status = null,
+    species = null,
+    type = null,
+    gender = null,
+    page = 1
+  ) {
     try {
       loading.value = true;
-      const request = [getListOfCharacter(page)];
+      const request = [
+        getListOfCharacter(name, status, species, type, gender, page)
+      ];
       return Promise.all(request).then((res) => {
         const { results, info } = res[0].data;
         filter.value = info;
@@ -25,5 +37,5 @@ export const useCharacter = defineStore('character', () => {
     }
   }
 
-  return { filter, data, loading, getCharacterList };
+  return { filter, data, loading, optionsFilter, getCharacterList };
 });
