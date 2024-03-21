@@ -1,0 +1,10 @@
+name: s'exécute lors d'un pull request
+on:
+  pull_request:
+    types:
+      - opened # C'est une des activités part default
+jobs:
+  exemple:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Il y a une pull request"
